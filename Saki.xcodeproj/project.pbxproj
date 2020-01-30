@@ -55,6 +55,10 @@
 		4F9175AD23E1F2770065D31D /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F9175AC23E1F2770065D31D /* GLKit.framework */; };
 		4F9175AE23E1F32B0065D31D /* libLive2DCubismCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F9175A723E1F0E50065D31D /* libLive2DCubismCore.a */; };
 		4F9175CF23E1FA1B0065D31D /* LAppAllocator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F9175CD23E1FA1B0065D31D /* LAppAllocator.mm */; };
+		4F9176B423E2981E0065D31D /* LAppBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9176B323E2981E0065D31D /* LAppBundle.m */; };
+		4F9176B823E299A40065D31D /* LAppModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F9176B723E299A40065D31D /* LAppModel.mm */; };
+		4F91788423E29EED0065D31D /* Live2DResource in Resources */ = {isa = PBXBuildFile; fileRef = 4F91788323E29EED0065D31D /* Live2DResource */; };
+		4F91788723E2C2880065D31D /* LAppTextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F91788623E2C2880065D31D /* LAppTextureManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -157,6 +161,13 @@
 		4F9175AC23E1F2770065D31D /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		4F9175CD23E1FA1B0065D31D /* LAppAllocator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LAppAllocator.mm; sourceTree = "<group>"; };
 		4F9175CE23E1FA1B0065D31D /* LAppAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAppAllocator.h; sourceTree = "<group>"; };
+		4F9176B223E2981E0065D31D /* LAppBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LAppBundle.h; sourceTree = "<group>"; };
+		4F9176B323E2981E0065D31D /* LAppBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LAppBundle.m; sourceTree = "<group>"; };
+		4F9176B623E299A40065D31D /* LAppModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LAppModel.h; sourceTree = "<group>"; };
+		4F9176B723E299A40065D31D /* LAppModel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LAppModel.mm; sourceTree = "<group>"; };
+		4F91788323E29EED0065D31D /* Live2DResource */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Live2DResource; path = ../Live2DResource; sourceTree = "<group>"; };
+		4F91788523E2C2880065D31D /* LAppTextureManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LAppTextureManager.h; sourceTree = "<group>"; };
+		4F91788623E2C2880065D31D /* LAppTextureManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LAppTextureManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +188,7 @@
 		4F91746423E1EFA60065D31D = {
 			isa = PBXGroup;
 			children = (
+				4F91788323E29EED0065D31D /* Live2DResource */,
 				4F91748923E1EFD60065D31D /* Live2DSDK */,
 				4F91746F23E1EFA60065D31D /* Saki */,
 				4F91746E23E1EFA60065D31D /* Products */,
@@ -197,6 +209,12 @@
 			children = (
 				4F9175CE23E1FA1B0065D31D /* LAppAllocator.h */,
 				4F9175CD23E1FA1B0065D31D /* LAppAllocator.mm */,
+				4F9176B223E2981E0065D31D /* LAppBundle.h */,
+				4F9176B323E2981E0065D31D /* LAppBundle.m */,
+				4F9176B623E299A40065D31D /* LAppModel.h */,
+				4F9176B723E299A40065D31D /* LAppModel.mm */,
+				4F91788523E2C2880065D31D /* LAppTextureManager.h */,
+				4F91788623E2C2880065D31D /* LAppTextureManager.m */,
 				4F91747023E1EFA60065D31D /* AppDelegate.h */,
 				4F91747123E1EFA60065D31D /* AppDelegate.mm */,
 				4F91747623E1EFA60065D31D /* ViewController.h */,
@@ -457,6 +475,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F91788423E29EED0065D31D /* Live2DResource in Resources */,
 				4F91748023E1EFA70065D31D /* LaunchScreen.storyboard in Resources */,
 				4F91747D23E1EFA70065D31D /* Assets.xcassets in Resources */,
 				4F91747B23E1EFA60065D31D /* Main.storyboard in Resources */,
@@ -476,6 +495,8 @@
 				4F91757D23E1F06F0065D31D /* CubismMoc.cpp in Sources */,
 				4F91759423E1F06F0065D31D /* CubismOffscreenSurface_OpenGLES2.cpp in Sources */,
 				4F9175A023E1F06F0065D31D /* CubismExpressionMotion.cpp in Sources */,
+				4F9176B823E299A40065D31D /* LAppModel.mm in Sources */,
+				4F9176B423E2981E0065D31D /* LAppBundle.m in Sources */,
 				4F91759523E1F06F0065D31D /* CubismDefaultParameterId.cpp in Sources */,
 				4F91758323E1F06F0065D31D /* CubismDebug.cpp in Sources */,
 				4F91759323E1F06F0065D31D /* CubismRenderer_OpenGLES2.cpp in Sources */,
@@ -508,6 +529,7 @@
 				4F91747223E1EFA60065D31D /* AppDelegate.mm in Sources */,
 				4F9175A123E1F06F0065D31D /* CubismMotionJson.cpp in Sources */,
 				4F91758223E1F06F0065D31D /* CubismString.cpp in Sources */,
+				4F91788723E2C2880065D31D /* LAppTextureManager.m in Sources */,
 				4F91757A23E1F06F0065D31D /* CubismModelUserData.cpp in Sources */,
 				4F9175A423E1F06F0065D31D /* csmRectF.cpp in Sources */,
 				4F91748323E1EFA70065D31D /* main.m in Sources */,
