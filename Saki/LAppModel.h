@@ -21,8 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadModel;
 - (void)loadTexture;
 
-- (void)draw;
-- (void)update;
+- (void)onUpdate;
 @end
 
 NS_ASSUME_NONNULL_END

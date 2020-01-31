@@ -51,8 +51,7 @@
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
     glClear(GL_COLOR_BUFFER_BIT);
     [self.haru setMVPMatrixWithSize:self.screenSize];
-    [self.haru draw];
-    [self.haru update];
+    [self.haru onUpdate];
 }
 
 @end

@@ -115,4 +115,12 @@ class Model : public Csm::CubismUserModel {
     return self.model->GetModel()->GetCanvasWidth();
 }
 
+
+#pragma mark - On Update
+- (void)onUpdate {
+    
+    
+    [self draw];
+    [self update];
+}
 @end
