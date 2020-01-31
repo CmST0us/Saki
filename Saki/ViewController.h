@@ -6,9 +6,10 @@
 //  Copyright © 2020 eki. All rights reserved.
 //
 
+#import <GLKit/GLKit.h>
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : GLKViewController<GLKViewControllerDelegate>
 
 
 @end

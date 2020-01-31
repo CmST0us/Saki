@@ -1,4 +1,4 @@
-//
+    //
 //  LAppModel.m
 //  Saki
 //
@@ -14,7 +14,7 @@
 #import "CubismRenderer_OpenGLES2.hpp"
 #import "LAppBundle.h"
 #import "LAppModel.h"
-#import "LAppTextureManager.h"
+#import "LAppOpenGLManager.h"
 namespace app {
 class Model : public Csm::CubismUserModel {
     
@@ -28,6 +28,8 @@ class Model : public Csm::CubismUserModel {
 @end
 @implementation LAppModel
 - (void)dealloc {
+    [self releaseTexture];
+    
     if (_modelSetting != nullptr) {
         delete _modelSetting;
     }
@@ -54,6 +56,16 @@ class Model : public Csm::CubismUserModel {
     return self;
 }
 
+- (void)setMVPMatrixWithSize:(CGSize)size {
+    Csm::CubismModelMatrix *modelMatrix = CSM_NEW Csm::CubismModelMatrix(self.canvasWidth, self.canvasHeight);
+    Csm::CubismMatrix44 projectionMatrix;
+    projectionMatrix.Scale(1, size.width / size.height);
+    projectionMatrix.MultiplyByMatrix(modelMatrix);
+    
+    self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->SetMvpMatrix(&projectionMatrix);
+    CSM_DELETE(modelMatrix);
+}
+
 - (void)loadModel {
     NSString *modelFileName = [NSString stringWithCString:_modelSetting->GetModelFileName() encoding:NSUTF8StringEncoding];
     if (modelFileName &&
@@ -71,13 +83,36 @@ class Model : public Csm::CubismUserModel {
     for (int i = 0; i < textureCount; ++i) {
         NSString *textureFileName = [[NSString alloc] initWithCString:self.modelSetting->GetTextureFileName(i) encoding:NSUTF8StringEncoding];
         NSString *textureFilePath = [textureDirPath stringByAppendingPathComponent:textureFileName];
-        CVOpenGLESTextureRef texture = [[LAppTextureManager sharedInstance] copyOpenGLESTextureWithImage:[UIImage imageWithContentsOfFile:textureFilePath]];
-        if (texture) {
-            GLuint textureID = CVOpenGLESTextureGetName(texture);
-            self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->BindTexture(i, textureID);
-            CFRelease(texture);
+        GLuint texture;
+        if ([LAppOpenGLManagerInstance createTexture:&texture withImage:[UIImage imageWithContentsOfFile:textureFilePath]]) {
+            self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->BindTexture(i, texture);
         }
     }
+}
+
+- (void)releaseTexture {
+    Csm::csmInt32 textureCount = self.modelSetting->GetTextureCount();
+    auto map = self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->GetBindedTextures();
+    for (Csm::csmInt32 i = 0; i < textureCount; ++i) {
+        GLuint texture = map[i];
+        [LAppOpenGLManagerInstance releaseTexture:texture];
+    }
+}
+
+- (void)draw {
+    self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->DrawModel();
+}
+
+- (void)update {
+    self.model->GetModel()->Update();
+}
+
+- (CGFloat)canvasWidth {
+    return self.model->GetModel()->GetCanvasWidth();
+}
+
+- (CGFloat)canvasHeight {
+    return self.model->GetModel()->GetCanvasWidth();
 }
 
 @end

@@ -1,34 +1,38 @@
 //
-//  LAppTextureManager.m
+//  LAppOpenGLManager.m
 //  Saki
 //
 //  Created by CmST0us on 2020/1/30.
 //  Copyright © 2020 eki. All rights reserved.
 //
 
-#import "LAppTextureManager.h"
+#import "LAppOpenGLManager.h"
 
-@interface LAppTextureManager () {
+@interface LAppOpenGLManager () {
     CVOpenGLESTextureCacheRef _textureCache;
 }
 @property (nonatomic, strong) EAGLContext *glContext;
 @property (nonatomic, strong) CIContext *ciContext;
+
+/// GLuint: CVOpenGLESTexture
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id> *textureMap;
 @end
 
-@implementation LAppTextureManager
+@implementation LAppOpenGLManager
 
 + (instancetype)sharedInstance {
-    static LAppTextureManager *manager;
+    static LAppOpenGLManager *manager;
     @synchronized (self) {
         if (manager == nil) {
-            manager = [[LAppTextureManager alloc] init];
+            manager = [[LAppOpenGLManager alloc] init];
         }
         return manager;
     }
 }
 
 - (void)setup {
-    _glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    _glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+    [EAGLContext setCurrentContext:_glContext];
     CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
                                  NULL,
                                  self.glContext,
@@ -36,6 +40,7 @@
                                  &_textureCache);
     
     _ciContext = [CIContext contextWithOptions:nil];
+    _textureMap = [[NSMutableDictionary alloc] init];
 }
 
 - (void)clean {
@@ -46,7 +51,11 @@
     
 }
 
-- (CVOpenGLESTextureRef)copyOpenGLESTextureWithImage:(UIImage *)image {
+- (BOOL)createTexture:(GLuint *)textureID withImage:(UIImage *)image {
+    if (textureID == nil ||
+        image == nil) {
+        return NO;
+    }
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CGFloat width = ciImage.extent.size.width;
     CGFloat height = ciImage.extent.size.height;
@@ -70,12 +79,46 @@
                                                  GL_RGBA,
                                                  width,
                                                  height,
-                                                 GL_RGBA,
+                                                 GL_BGRA,
                                                  GL_UNSIGNED_BYTE,
                                                  0,
                                                  &texture);
     
     CFRelease(pixelBuffer);
-    return texture;
+    if (texture) {
+        GLuint tID = CVOpenGLESTextureGetName(texture);
+        *textureID = tID;
+        CVOpenGLESTextureRef currentTexture = (__bridge CVOpenGLESTextureRef)(self.textureMap[@(tID)]);
+        if (currentTexture) {
+            CFRelease(currentTexture);
+        }
+        self.textureMap[@(tID)] = (__bridge id)texture;
+        return YES;
+    }
+    return NO;
+}
+
+- (void)releaseTexture:(GLuint)texture {
+    CVOpenGLESTextureRef currentTexture = (__bridge CVOpenGLESTextureRef)(self.textureMap[@(texture)]);
+    if (currentTexture) {
+        CFRelease(currentTexture);
+    }
+    [self.textureMap removeObjectForKey:@(texture)];
+}
+
+- (void)inContext:(dispatch_block_t)block {
+    EAGLContext *currentContext = [EAGLContext currentContext];
+    EAGLContext *workingContext = nil;
+    if (currentContext == self.glContext) {
+        workingContext = currentContext;
+    } else {
+        workingContext = self.glContext;
+    }
+    
+    [EAGLContext setCurrentContext:workingContext];
+    if (block) {
+        block();
+    }
+    [EAGLContext setCurrentContext:currentContext];
 }
 @end

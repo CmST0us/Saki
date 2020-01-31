@@ -11,10 +11,18 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LAppModel : NSObject
+@property (nonatomic, readonly) CGFloat canvasWidth;
+@property (nonatomic, readonly) CGFloat canvasHeight;
+
 - (nullable instancetype)initWithName:(NSString *)name;
+
+- (void)setMVPMatrixWithSize:(CGSize)size;
 
 - (void)loadModel;
 - (void)loadTexture;
+
+- (void)draw;
+- (void)update;
 @end
 
 NS_ASSUME_NONNULL_END
