@@ -22,17 +22,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LAppOpenGLManager : NSObject
 @property (nonatomic, readonly) EAGLContext *glContext;
-
+@property (nonatomic, readonly) NSTimeInterval deltaTime;
 + (instancetype)sharedInstance;
 
 - (void)setup;
 - (void)clean;
+
+#pragma mark - Texture
 
 - (BOOL)createTexture:(GLuint *)textureID
             withImage:(UIImage *)image;
 - (void)releaseTexture:(GLuint)texture;
 
 - (void)inContext:(dispatch_block_t)block;
+
+#pragma mark - Time
+- (void)updateTime;
 
 @end
 

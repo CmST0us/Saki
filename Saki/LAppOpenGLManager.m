@@ -11,6 +11,10 @@
 @interface LAppOpenGLManager () {
     CVOpenGLESTextureCacheRef _textureCache;
 }
+@property (nonatomic, assign) NSTimeInterval currentFrame;
+@property (nonatomic, assign) NSTimeInterval lastFrame;
+@property (nonatomic, assign) NSTimeInterval deltaTime;
+
 @property (nonatomic, strong) EAGLContext *glContext;
 @property (nonatomic, strong) CIContext *ciContext;
 
@@ -31,6 +35,8 @@
 }
 
 - (void)setup {
+    [self updateTime];
+    
     _glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     [EAGLContext setCurrentContext:_glContext];
     CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
@@ -60,12 +66,16 @@
     CGFloat width = ciImage.extent.size.width;
     CGFloat height = ciImage.extent.size.height;
     
+    NSDictionary *pixelBufferAttribute = @{
+        (id)kCVPixelBufferOpenGLESCompatibilityKey: @(YES),
+        (id)kCVPixelBufferOpenGLESTextureCacheCompatibilityKey: @(YES)
+    };
     CVPixelBufferRef pixelBuffer;
     CVPixelBufferCreate(kCFAllocatorDefault,
                         width,
                         height,
                         kCVPixelFormatType_32BGRA,
-                        NULL,
+                        (__bridge CFDictionaryRef)pixelBufferAttribute,
                         &pixelBuffer);
     
     [self.ciContext render:ciImage toCVPixelBuffer:pixelBuffer];
@@ -120,5 +130,14 @@
         block();
     }
     [EAGLContext setCurrentContext:currentContext];
+}
+
+#pragma mark - Time
+- (void)updateTime {
+    NSDate *now = [NSDate date];
+    NSTimeInterval unixtime = [now timeIntervalSince1970];
+    self.currentFrame = unixtime;
+    self.deltaTime = self.currentFrame - self.lastFrame;
+    self.lastFrame = self.currentFrame;
 }
 @end

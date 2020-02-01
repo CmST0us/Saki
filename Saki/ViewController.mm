@@ -28,30 +28,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.glView setContext:LAppGLContext];
-    LAppGLContextAction(^{
-        self.haru = [[LAppModel alloc] initWithName:@"Hiyori"];
-        [self.haru loadModel];
-        [self.haru loadTexture];
-    });
-    /// 设置尺寸
     self.screenSize = [[UIScreen mainScreen] bounds].size;
     
-    
+    [self.glView setContext:LAppGLContext];
     LAppGLContextAction(^{
-        glClearColor(0, 0, 0, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        self.haru = [[LAppModel alloc] initWithName:@"Haru"];
+        [self.haru loadAsset];
+        [self.haru startBreath];
     });
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
+    [LAppOpenGLManagerInstance updateTime];
+    
     glClear(GL_COLOR_BUFFER_BIT);
     [self.haru setMVPMatrixWithSize:self.screenSize];
     [self.haru onUpdate];
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 @end

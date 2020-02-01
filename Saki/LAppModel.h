@@ -18,8 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setMVPMatrixWithSize:(CGSize)size;
 
-- (void)loadModel;
-- (void)loadTexture;
+- (void)loadAsset;
+
+- (void)startBreath;
+- (void)stopBreath;
 
 - (void)onUpdate;
 @end
