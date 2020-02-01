@@ -9,17 +9,16 @@
 #import "LAppOpenGLManager.h"
 
 @interface LAppOpenGLManager () {
-    CVOpenGLESTextureCacheRef _textureCache;
+    
 }
 @property (nonatomic, assign) NSTimeInterval currentFrame;
 @property (nonatomic, assign) NSTimeInterval lastFrame;
 @property (nonatomic, assign) NSTimeInterval deltaTime;
 
 @property (nonatomic, strong) EAGLContext *glContext;
-@property (nonatomic, strong) CIContext *ciContext;
 
-/// GLuint: CVOpenGLESTexture
-@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id> *textureMap;
+/// GLuint: GLKTextureInfo
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, GLKTextureInfo *> *textureMap;
 @end
 
 @implementation LAppOpenGLManager
@@ -37,24 +36,13 @@
 - (void)setup {
     [self updateTime];
     
-    _glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+    _glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     [EAGLContext setCurrentContext:_glContext];
-    CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
-                                 NULL,
-                                 self.glContext,
-                                 NULL,
-                                 &_textureCache);
-    
-    _ciContext = [CIContext contextWithOptions:nil];
     _textureMap = [[NSMutableDictionary alloc] init];
 }
 
 - (void)clean {
-    if (_textureCache) {
-        CFRelease(_textureCache);
-        _textureCache = NULL;
-    }
-    
+    [self.textureMap removeAllObjects];
 }
 
 - (BOOL)createTexture:(GLuint *)textureID withImage:(UIImage *)image {
@@ -62,47 +50,12 @@
         image == nil) {
         return NO;
     }
-    CIImage *ciImage = [[CIImage alloc] initWithImage:image];
-    CGFloat width = ciImage.extent.size.width;
-    CGFloat height = ciImage.extent.size.height;
-    
-    NSDictionary *pixelBufferAttribute = @{
-        (id)kCVPixelBufferOpenGLESCompatibilityKey: @(YES),
-        (id)kCVPixelBufferOpenGLESTextureCacheCompatibilityKey: @(YES)
-    };
-    CVPixelBufferRef pixelBuffer;
-    CVPixelBufferCreate(kCFAllocatorDefault,
-                        width,
-                        height,
-                        kCVPixelFormatType_32BGRA,
-                        (__bridge CFDictionaryRef)pixelBufferAttribute,
-                        &pixelBuffer);
-    
-    [self.ciContext render:ciImage toCVPixelBuffer:pixelBuffer];
-    
-    CVOpenGLESTextureRef texture;
-    CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
-                                                 _textureCache,
-                                                 pixelBuffer,
-                                                 NULL,
-                                                 GL_TEXTURE_2D,
-                                                 GL_RGBA,
-                                                 width,
-                                                 height,
-                                                 GL_BGRA,
-                                                 GL_UNSIGNED_BYTE,
-                                                 0,
-                                                 &texture);
-    
-    CFRelease(pixelBuffer);
-    if (texture) {
-        GLuint tID = CVOpenGLESTextureGetName(texture);
+    CGImageRef cgImage = image.CGImage;
+    GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithCGImage:cgImage options:nil error:nil];
+    if (textureInfo) {
+        GLuint tID = textureInfo.name;
         *textureID = tID;
-        CVOpenGLESTextureRef currentTexture = (__bridge CVOpenGLESTextureRef)(self.textureMap[@(tID)]);
-        if (currentTexture) {
-            CFRelease(currentTexture);
-        }
-        self.textureMap[@(tID)] = (__bridge id)texture;
+        self.textureMap[@(tID)] = textureInfo;
         return YES;
     }
     return NO;

@@ -10,9 +10,10 @@
 #import <UIKit/UIKit.h>
 #import <CoreVideo/CoreVideo.h>
 #import <CoreImage/CoreImage.h>
-#import <OpenGLES/ES3/gl.h>
-#import <OpenGLES/ES3/glext.h>
+#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES2/glext.h>
 #import <OpenGLES/EAGL.h>
+#import <GLKit/GLKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

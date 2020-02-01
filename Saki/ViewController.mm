@@ -44,7 +44,6 @@
     glClear(GL_COLOR_BUFFER_BIT);
     [self.haru setMVPMatrixWithSize:self.screenSize];
     [self.haru onUpdate];
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 @end
