@@ -45,6 +45,9 @@ public:
     Csm::CubismMotionManager *GetExpressionManager() {
         return _expressionManager;
     }
+    Csm::CubismPhysics *GetPhysics() {
+        return _physics;
+    }
 };
 }
 
@@ -116,6 +119,7 @@ public:
     [self loadModel];
     [self loadPose];
     [self loadExpression];
+    [self loadPhysics];
     [self createRender];
     [self loadTexture];
 }
@@ -170,6 +174,13 @@ public:
             [self.expressionMotionMap setObject:[NSValue valueWithPointer:expression] forKey:expressionName];
         }
     }
+}
+
+- (void)loadPhysics {
+    NSString *fileName = [NSString stringWithCString:self.modelSetting->GetPhysicsFileName() encoding:NSUTF8StringEncoding];
+    NSString *filePath = [[[NSBundle modelResourceBundleWithName:self.assetName] bundlePath] stringByAppendingPathComponent:fileName];
+    NSData *fileData = [[NSData alloc] initWithContentsOfFile:filePath];
+    self.model->LoadPhysics((const Csm::csmByte *)fileData.bytes, (Csm::csmSizeInt)fileData.length);
 }
 
 - (void)loadMotion {
@@ -299,6 +310,9 @@ public:
     /// 更新并绘制
     if (self.model->GetExpressionManager()) {
         self.model->GetExpressionManager()->UpdateMotion(self.model->GetModel(), deltaTime);
+    }
+    if (self.model->GetPhysics()) {
+        self.model->GetPhysics()->Evaluate(self.model->GetModel(), deltaTime);
     }
     if (self.modelBreath) {
         self.modelBreath->UpdateParameters(self.model->GetModel(), deltaTime);

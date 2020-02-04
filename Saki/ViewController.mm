@@ -83,7 +83,7 @@
     
     [self.glView setContext:LAppGLContext];
     LAppGLContextAction(^{
-        self.haru = [[LAppModel alloc] initWithName:@"Haru"];
+        self.haru = [[LAppModel alloc] initWithName:@"Hiyori"];
         [self.haru loadAsset];
         self.expressionCount = self.haru.expressionName.count;
         self.eyeLinearX = [[MPControlValueLinear alloc] initWithOutputMax:[self.haru paramMaxValue:LAppParamEyeBallX].doubleValue
