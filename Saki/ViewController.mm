@@ -123,6 +123,7 @@
         [self.haru setParam:LAppParamEyeBallX forValue:@(self.eyeX)];
         [self.haru setParam:LAppParamEyeBallY forValue:@(self.eyeY)];
     }];
+    glClearColor(0, 1, 0, 1);
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
