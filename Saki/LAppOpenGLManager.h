@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Texture
 
 - (BOOL)createTexture:(GLuint *)textureID
-            withImage:(UIImage *)image;
+         withFilePath:(NSString *)filePath;
 - (void)releaseTexture:(GLuint)texture;
 
 - (void)inContext:(dispatch_block_t)block;

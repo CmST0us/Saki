@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <CoreImage/CoreImage.h>
 #import <CoreVideo/CoreVideo.h>
+#import "csmString.hpp"
+#import "csmMap.hpp"
 #import "CubismUserModel.hpp"
 #import "CubismIdManager.hpp"
 #import "CubismDefaultParameterId.hpp"
@@ -26,6 +28,9 @@ public:
     Csm::CubismPose *GetPose() {
         return _pose;
     }
+    Csm::CubismMotionManager *GetExpressionManager() {
+        return _expressionManager;
+    }
 };
 }
 
@@ -33,6 +38,8 @@ public:
 @property (nonatomic, copy) NSString *assetName;
 @property (nonatomic, assign) Csm::ICubismModelSetting *modelSetting;
 @property (nonatomic, assign) app::Model *model;
+
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *expressionMotionMap;
 
 @property (nonatomic, assign) Csm::CubismPose *modelPose;
 @property (nonatomic, assign) Csm::CubismBreath *modelBreath;
@@ -50,6 +57,15 @@ public:
         _modelBreath = nullptr;
     }
     
+    if (_expressionMotionMap) {
+        [[_expressionMotionMap allValues] enumerateObjectsUsingBlock:^(NSValue * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            Csm::ACubismMotion *motion = (Csm::ACubismMotion *)[obj pointerValue];
+            if (motion) {
+                Csm::ACubismMotion::Delete(motion);
+            }
+        }];
+    }
+    
     if (_model) {
         delete _model;
     }
@@ -60,7 +76,8 @@ public:
     if (self) {
         _assetName = name;
         _modelSetting = nullptr;
-        
+        _expressionMotionMap = [[NSMutableDictionary alloc] init];
+                
         NSString *model3FilePath = [[NSBundle modelResourceBundleWithName:name] model3FilePath];
         if (model3FilePath == nil) {
             return nil;
@@ -83,6 +100,7 @@ public:
 - (void)loadAsset {
     [self loadModel];
     [self loadPose];
+    [self loadExpression];
     [self createRender];
     [self loadTexture];
 }
@@ -114,6 +132,31 @@ public:
     }
 }
 
+- (void)loadExpression {
+    Csm::csmInt32 expressionCount = self.modelSetting->GetExpressionCount();
+    for (Csm::csmInt32 i = 0; i < expressionCount; ++i) {
+        Csm::csmString expressionNameString = Csm::csmString(self.modelSetting->GetExpressionName(i));
+        NSString *expressionName = [NSString stringWithCString:expressionNameString.GetRawString() encoding:NSUTF8StringEncoding] ;
+        NSValue *v = [self.expressionMotionMap objectForKey:expressionName];
+        if (v != nil) {
+            Csm::ACubismMotion *expression = (Csm::ACubismMotion *)v.pointerValue;
+            if (expression) {
+                Csm::ACubismMotion::Delete(expression);
+            }
+            [self.expressionMotionMap removeObjectForKey:expressionName];
+        }
+        
+        NSString *expressionFileName = [NSString stringWithCString:self.modelSetting->GetExpressionFileName(i) encoding:NSUTF8StringEncoding];
+        NSString *expressionFilePath = [[[NSBundle modelResourceBundleWithName:self.assetName] bundlePath] stringByAppendingPathComponent:expressionFileName];
+        
+        NSData *fileData = [[NSData alloc] initWithContentsOfFile:expressionFilePath];
+        Csm::ACubismMotion *expression = self.model->LoadExpression((const Csm::csmByte *)fileData.bytes, (Csm::csmSizeInt)fileData.length, [expressionName cStringUsingEncoding:NSUTF8StringEncoding]);
+        if (expression) {
+            [self.expressionMotionMap setObject:[NSValue valueWithPointer:expression] forKey:expressionName];
+        }
+    }
+}
+
 - (void)loadMotion {
     Csm::csmInt32 motionGroupCount = self.modelSetting->GetMotionGroupCount();
     for (Csm::csmInt32 i = 0; i < motionGroupCount; ++i) {
@@ -139,7 +182,7 @@ public:
         NSString *textureFileName = [[NSString alloc] initWithCString:self.modelSetting->GetTextureFileName(i) encoding:NSUTF8StringEncoding];
         NSString *textureFilePath = [textureDirPath stringByAppendingPathComponent:textureFileName];
         GLuint texture;
-        if ([LAppOpenGLManagerInstance createTexture:&texture withImage:[UIImage imageWithContentsOfFile:textureFilePath]]) {
+        if ([LAppOpenGLManagerInstance createTexture:&texture withFilePath:textureFilePath]) {
             self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->BindTexture(i, texture);
         }
     }
@@ -179,6 +222,17 @@ public:
     self.modelBreath = nullptr;
 }
 
+- (void)startExpressionWithName:(NSString *)expressionName {
+    [self startExpressionWithName:expressionName autoDelete:NO priority:kLAppModelDefaultExpressionPriority];
+}
+
+- (void)startExpressionWithName:(NSString *)expressionName autoDelete:(BOOL)autoDelete priority:(NSInteger)priority {
+    Csm::ACubismMotion *motion = (Csm::ACubismMotion *)[self.expressionMotionMap[expressionName] pointerValue];
+    if (motion != nullptr) {
+        self.model->GetExpressionManager()->StartMotionPriority(motion, autoDelete, (Csm::csmInt32)priority);
+    }
+}
+
 - (CGFloat)canvasWidth {
     return self.model->GetModel()->GetCanvasWidth();
 }
@@ -187,19 +241,27 @@ public:
     return self.model->GetModel()->GetCanvasHeight();
 }
 
+- (NSArray<NSString *> *)expressionName {
+    return [self.expressionMotionMap allKeys];
+}
+
 #pragma mark - On Update
 - (void)onUpdate {
+    NSTimeInterval deltaTime = LAppOpenGLManagerInstance.deltaTime;
     /// 设置模型参数
     self.model->GetModel()->LoadParameters();
     
     self.model->GetModel()->SaveParameters();
     
     /// 更新并绘制
+    if (self.model->GetExpressionManager()) {
+        self.model->GetExpressionManager()->UpdateMotion(self.model->GetModel(), deltaTime);
+    }
     if (self.modelBreath) {
-        self.modelBreath->UpdateParameters(self.model->GetModel(), LAppOpenGLManagerInstance.deltaTime);
+        self.modelBreath->UpdateParameters(self.model->GetModel(), deltaTime);
     }
     if (self.modelPose) {
-        self.modelPose->UpdateParameters(self.model->GetModel(), LAppOpenGLManagerInstance.deltaTime);
+        self.modelPose->UpdateParameters(self.model->GetModel(), deltaTime);
     }
     self.model->GetModel()->Update();
     self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->DrawModel();

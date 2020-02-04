@@ -10,9 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#define kLAppModelDefaultExpressionPriority (3)
+
 @interface LAppModel : NSObject
 @property (nonatomic, readonly) CGFloat canvasWidth;
 @property (nonatomic, readonly) CGFloat canvasHeight;
+
+@property (nonatomic, readonly) NSArray<NSString *> *expressionName;
 
 - (nullable instancetype)initWithName:(NSString *)name;
 
@@ -22,6 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startBreath;
 - (void)stopBreath;
+
+- (void)startExpressionWithName:(NSString *)expressionName;
+- (void)startExpressionWithName:(NSString *)expressionName
+                     autoDelete:(BOOL)autoDelete
+                       priority:(NSInteger)priority;
 
 - (void)onUpdate;
 @end

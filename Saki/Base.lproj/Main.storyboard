@@ -12,7 +12,7 @@
         <scene sceneID="eXM-aT-fTv">
             <objects>
                 <glkViewController preferredFramesPerSecond="30" id="Z07-In-w9M" customClass="ViewController" sceneMemberID="viewController">
-                    <glkView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" enableSetNeedsDisplay="NO" id="tl3-KB-2xS">
+                    <glkView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" drawableDepthFormat="16" enableSetNeedsDisplay="NO" id="tl3-KB-2xS">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="JTf-kA-RjL"/>

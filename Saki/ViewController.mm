@@ -17,6 +17,7 @@
 @property (nonatomic) GLKView *glView;
 @property (nonatomic, strong) LAppModel *haru;
 @property (nonatomic, assign) CGSize screenSize;
+@property (nonatomic, assign) NSInteger expressionCount;
 @end
 
 @implementation ViewController
@@ -34,6 +35,7 @@
     LAppGLContextAction(^{
         self.haru = [[LAppModel alloc] initWithName:@"Haru"];
         [self.haru loadAsset];
+        self.expressionCount = self.haru.expressionName.count;
         [self.haru startBreath];
     });
 }
@@ -44,6 +46,16 @@
     glClear(GL_COLOR_BUFFER_BIT);
     [self.haru setMVPMatrixWithSize:self.screenSize];
     [self.haru onUpdate];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    if (self.expressionCount == 0) return;
+    static NSInteger index = 0;
+    index += 1;
+    if (index == self.expressionCount) {
+        index = 0;
+    }
+    [self.haru startExpressionWithName:self.haru.expressionName[index]];
 }
 
 @end
