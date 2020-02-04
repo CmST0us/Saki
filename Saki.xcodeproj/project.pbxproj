@@ -59,6 +59,11 @@
 		4F9176B823E299A40065D31D /* LAppModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F9176B723E299A40065D31D /* LAppModel.mm */; };
 		4F91788423E29EED0065D31D /* Live2DResource in Resources */ = {isa = PBXBuildFile; fileRef = 4F91788323E29EED0065D31D /* Live2DResource */; };
 		4F91788723E2C2880065D31D /* LAppOpenGLManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4F91788623E2C2880065D31D /* LAppOpenGLManager.mm */; };
+		4FDBA28923E97222003F40F1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDBA28823E97222003F40F1 /* AVFoundation.framework */; };
+		4FDBA28D23E9895A003F40F1 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDBA28C23E9895A003F40F1 /* CoreMedia.framework */; };
+		4FDBA28F23E9920C003F40F1 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDBA28E23E9920C003F40F1 /* ARKit.framework */; };
+		4FDBA29123E99A4F003F40F1 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDBA29023E99A4F003F40F1 /* SceneKit.framework */; };
+		4FDBA29523E9AEF8003F40F1 /* MPControlValueLinear.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDBA29323E9AEF8003F40F1 /* MPControlValueLinear.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -169,6 +174,15 @@
 		4F91788523E2C2880065D31D /* LAppOpenGLManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LAppOpenGLManager.h; sourceTree = "<group>"; };
 		4F91788623E2C2880065D31D /* LAppOpenGLManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LAppOpenGLManager.mm; sourceTree = "<group>"; };
 		4FDBA28323E95E14003F40F1 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		4FDBA28423E96F64003F40F1 /* CameraKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CameraKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FDBA28823E97222003F40F1 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		4FDBA28A23E9894C003F40F1 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
+		4FDBA28C23E9895A003F40F1 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		4FDBA28E23E9920C003F40F1 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
+		4FDBA29023E99A4F003F40F1 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
+		4FDBA29223E9AEF8003F40F1 /* MPControlValueLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPControlValueLinear.h; sourceTree = "<group>"; };
+		4FDBA29323E9AEF8003F40F1 /* MPControlValueLinear.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPControlValueLinear.m; sourceTree = "<group>"; };
+		4FDBA29423E9AEF8003F40F1 /* MPControlValueProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPControlValueProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,10 +190,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FDBA28D23E9895A003F40F1 /* CoreMedia.framework in Frameworks */,
 				4F9175AB23E1F26E0065D31D /* CoreGraphics.framework in Frameworks */,
 				4F9175AE23E1F32B0065D31D /* libLive2DCubismCore.a in Frameworks */,
+				4FDBA28923E97222003F40F1 /* AVFoundation.framework in Frameworks */,
+				4FDBA29123E99A4F003F40F1 /* SceneKit.framework in Frameworks */,
 				4F9175AD23E1F2770065D31D /* GLKit.framework in Frameworks */,
 				4F9175A923E1F25E0065D31D /* OpenGLES.framework in Frameworks */,
+				4FDBA28F23E9920C003F40F1 /* ARKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,6 +430,12 @@
 		4F9175A623E1F0E40065D31D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4FDBA29023E99A4F003F40F1 /* SceneKit.framework */,
+				4FDBA28E23E9920C003F40F1 /* ARKit.framework */,
+				4FDBA28C23E9895A003F40F1 /* CoreMedia.framework */,
+				4FDBA28A23E9894C003F40F1 /* Vision.framework */,
+				4FDBA28823E97222003F40F1 /* AVFoundation.framework */,
+				4FDBA28423E96F64003F40F1 /* CameraKit.framework */,
 				4F9175AC23E1F2770065D31D /* GLKit.framework */,
 				4F9175AA23E1F26E0065D31D /* CoreGraphics.framework */,
 				4F9175A823E1F25E0065D31D /* OpenGLES.framework */,
@@ -423,6 +447,9 @@
 		4FDBA28223E95E06003F40F1 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				4FDBA29223E9AEF8003F40F1 /* MPControlValueLinear.h */,
+				4FDBA29323E9AEF8003F40F1 /* MPControlValueLinear.m */,
+				4FDBA29423E9AEF8003F40F1 /* MPControlValueProtocol.h */,
 				4FDBA28323E95E14003F40F1 /* stb_image.h */,
 			);
 			path = Utils;
@@ -534,6 +561,7 @@
 				4F9175CF23E1FA1B0065D31D /* LAppAllocator.mm in Sources */,
 				4F91759D23E1F06F0065D31D /* CubismMotion.cpp in Sources */,
 				4F9175A323E1F06F0065D31D /* csmString.cpp in Sources */,
+				4FDBA29523E9AEF8003F40F1 /* MPControlValueLinear.m in Sources */,
 				4F91759A23E1F06F0065D31D /* CubismMath.cpp in Sources */,
 				4F91759923E1F06F0065D31D /* CubismTargetPoint.cpp in Sources */,
 				4F91747223E1EFA60065D31D /* AppDelegate.mm in Sources */,

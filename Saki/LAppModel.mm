@@ -28,7 +28,13 @@
 LAppParam const LAppParamAngleX = LAppParamMake(ParamAngleX);
 LAppParam const LAppParamAngleY = LAppParamMake(ParamAngleY);
 LAppParam const LAppParamAngleZ = LAppParamMake(ParamAngleZ);
-LAppParam const LAppParamMouthOpenY = LAppParamMake(ParamMouthOpenY)
+LAppParam const LAppParamMouthOpenY = LAppParamMake(ParamMouthOpenY);
+LAppParam const LAppParamEyeLOpen = LAppParamMake(ParamEyeLOpen);
+LAppParam const LAppParamEyeROpen = LAppParamMake(ParamEyeROpen);
+LAppParam const LAppParamEyeBallX = LAppParamMake(ParamEyeBallX);
+LAppParam const LAppParamEyeBallY = LAppParamMake(ParamEyeBallY);
+LAppParam const LAppParamBaseX = LAppParamMake(ParamBaseX);
+LAppParam const LAppParamBaseY = LAppParamMake(ParamBaseY);
 
 namespace app {
 class Model : public Csm::CubismUserModel {
@@ -99,9 +105,10 @@ public:
 
 - (void)setMVPMatrixWithSize:(CGSize)size {
     Csm::CubismMatrix44 projectionMatrix;
-    projectionMatrix.Scale(1, size.width / size.height);
+    CGFloat radio = size.height / size.width;
+    projectionMatrix.Scale(size.height / size.width * radio, 1 * radio);
+    projectionMatrix.TranslateY(-0.4);
     projectionMatrix.MultiplyByMatrix(self.model->GetModelMatrix());
-    
     self.model->GetRenderer<Csm::Rendering::CubismRenderer_OpenGLES2>()->SetMvpMatrix(&projectionMatrix);
 }
 
@@ -254,6 +261,21 @@ public:
 }
 
 #pragma mark - Param
+- (NSNumber *)paramMaxValue:(LAppParam)param {
+    const Csm::csmInt32 index = self.model->GetModel()->GetParameterIndex(Csm::CubismFramework::GetIdManager()->GetId([param cStringUsingEncoding:NSUTF8StringEncoding]));
+    return @(self.model->GetModel()->GetParameterMaximumValue(index));
+}
+
+- (NSNumber *)paramMinValue:(LAppParam)param {
+    const Csm::csmInt32 index = self.model->GetModel()->GetParameterIndex(Csm::CubismFramework::GetIdManager()->GetId([param cStringUsingEncoding:NSUTF8StringEncoding]));
+    return @(self.model->GetModel()->GetParameterMinimumValue(index));
+}
+
+- (NSNumber *)paramDefaultValue:(LAppParam)param {
+    const Csm::csmInt32 index = self.model->GetModel()->GetParameterIndex(Csm::CubismFramework::GetIdManager()->GetId([param cStringUsingEncoding:NSUTF8StringEncoding]));
+    return @(self.model->GetModel()->GetParameterDefaultValue(index));
+}
+
 - (void)setParam:(LAppParam)param forValue:(NSNumber *)value {
     [self setParam:param forValue:value width:1.0];
 }

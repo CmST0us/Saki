@@ -18,6 +18,12 @@ extern LAppParam const LAppParamAngleX;
 extern LAppParam const LAppParamAngleY;
 extern LAppParam const LAppParamAngleZ;
 extern LAppParam const LAppParamMouthOpenY;
+extern LAppParam const LAppParamEyeLOpen;
+extern LAppParam const LAppParamEyeROpen;
+extern LAppParam const LAppParamEyeBallX;
+extern LAppParam const LAppParamEyeBallY;
+extern LAppParam const LAppParamBaseX;
+extern LAppParam const LAppParamBaseY;
 
 @interface LAppModel : NSObject
 @property (nonatomic, readonly) CGFloat canvasWidth;
@@ -39,6 +45,9 @@ extern LAppParam const LAppParamMouthOpenY;
                      autoDelete:(BOOL)autoDelete
                        priority:(NSInteger)priority;
 
+- (NSNumber *)paramMaxValue:(LAppParam)param;
+- (NSNumber *)paramMinValue:(LAppParam)param;
+- (NSNumber *)paramDefaultValue:(LAppParam)param;
 - (void)setParam:(LAppParam)param forValue:(NSNumber *)value;
 - (void)setParam:(LAppParam)param forValue:(NSNumber *)value width:(CGFloat)width;
 

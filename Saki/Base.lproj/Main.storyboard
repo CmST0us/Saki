@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Z07-In-w9M">
-    <device id="retina6_1" orientation="landscape" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
@@ -13,11 +13,11 @@
             <objects>
                 <glkViewController preferredFramesPerSecond="30" id="Z07-In-w9M" customClass="ViewController" sceneMemberID="viewController">
                     <glkView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" drawableDepthFormat="16" enableSetNeedsDisplay="NO" id="tl3-KB-2xS">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="gMF-NE-dVi">
-                                <rect key="frame" x="587" y="109.5" width="265" height="195"/>
+                                <rect key="frame" x="105" y="657" width="265" height="195"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="vec-s1-96l">
                                         <rect key="frame" x="0.0" y="0.0" width="265" height="30"/>
@@ -95,7 +95,7 @@
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="gMF-NE-dVi" secondAttribute="trailing" constant="44" id="5xp-4q-ebC"/>
-                            <constraint firstItem="gMF-NE-dVi" firstAttribute="centerY" secondItem="tl3-KB-2xS" secondAttribute="centerY" id="C1m-rY-e7s"/>
+                            <constraint firstItem="gMF-NE-dVi" firstAttribute="bottom" secondItem="tl3-KB-2xS" secondAttribute="bottom" constant="-44" id="C1m-rY-e7s"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JTf-kA-RjL"/>
                         <connections>
