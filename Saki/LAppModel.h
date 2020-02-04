@@ -12,6 +12,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define kLAppModelDefaultExpressionPriority (3)
 
+typedef NSString * LAppParam;
+
+extern LAppParam const LAppParamAngleX;
+extern LAppParam const LAppParamAngleY;
+extern LAppParam const LAppParamAngleZ;
+extern LAppParam const LAppParamMouthOpenY;
+
 @interface LAppModel : NSObject
 @property (nonatomic, readonly) CGFloat canvasWidth;
 @property (nonatomic, readonly) CGFloat canvasHeight;
@@ -32,7 +39,10 @@ NS_ASSUME_NONNULL_BEGIN
                      autoDelete:(BOOL)autoDelete
                        priority:(NSInteger)priority;
 
-- (void)onUpdate;
+- (void)setParam:(LAppParam)param forValue:(NSNumber *)value;
+- (void)setParam:(LAppParam)param forValue:(NSNumber *)value width:(CGFloat)width;
+
+- (void)onUpdateWithParameterUpdate:(dispatch_block_t)block;
 @end
 
 NS_ASSUME_NONNULL_END

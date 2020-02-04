@@ -6,6 +6,7 @@
 //  Copyright © 2020 eki. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <CoreImage/CoreImage.h>
 #import <CoreVideo/CoreVideo.h>
@@ -20,7 +21,14 @@
 #import "LAppModel.h"
 #import "LAppOpenGLManager.h"
 
-#define LAppModelParameter(key) Csm::CubismFramework::GetIdManager()->GetId(key)
+#define LAppModelParameterID(key) Csm::CubismFramework::GetIdManager()->GetId(Csm::DefaultParameterId::key)
+
+#define LAppParamMake(key) [NSString stringWithCString:Csm::DefaultParameterId::key encoding:NSUTF8StringEncoding];
+
+LAppParam const LAppParamAngleX = LAppParamMake(ParamAngleX);
+LAppParam const LAppParamAngleY = LAppParamMake(ParamAngleY);
+LAppParam const LAppParamAngleZ = LAppParamMake(ParamAngleZ);
+LAppParam const LAppParamMouthOpenY = LAppParamMake(ParamMouthOpenY)
 
 namespace app {
 class Model : public Csm::CubismUserModel {
@@ -208,11 +216,11 @@ public:
     self.modelBreath = Csm::CubismBreath::Create();
     Csm::csmVector<Csm::CubismBreath::BreathParameterData> breathParameters;
 
-    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameter(Csm::DefaultParameterId::ParamAngleX), 0.0f, 15.0f, 6.5345f, 0.5f));
-    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameter(Csm::DefaultParameterId::ParamAngleY), 0.0f, 8.0f, 3.5345f, 0.5f));
-    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameter(Csm::DefaultParameterId::ParamAngleZ), 0.0f, 10.0f, 5.5345f, 0.5f));
-    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameter(Csm::DefaultParameterId::ParamBodyAngleX), 0.0f, 4.0f, 15.5345f, 0.5f));
-    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameter(Csm::DefaultParameterId::ParamBreath), 0.5f, 0.5f, 3.2345f, 0.5f));
+    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameterID(ParamAngleX), 0.0f, 15.0f, 6.5345f, 0.5f));
+    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameterID(ParamAngleY), 0.0f, 8.0f, 3.5345f, 0.5f));
+    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameterID(ParamAngleZ), 0.0f, 10.0f, 5.5345f, 0.5f));
+    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameterID(ParamBodyAngleX), 0.0f, 4.0f, 15.5345f, 0.5f));
+    breathParameters.PushBack(Csm::CubismBreath::BreathParameterData(LAppModelParameterID(ParamBreath), 0.5f, 0.5f, 3.2345f, 0.5f));
 
     self.modelBreath->SetParameters(breathParameters);
 }
@@ -245,12 +253,25 @@ public:
     return [self.expressionMotionMap allKeys];
 }
 
+#pragma mark - Param
+- (void)setParam:(LAppParam)param forValue:(NSNumber *)value {
+    [self setParam:param forValue:value width:1.0];
+}
+
+- (void)setParam:(LAppParam)param forValue:(NSNumber *)value width:(CGFloat)width {
+    self.model->GetModel()->SetParameterValue(Csm::CubismFramework::GetIdManager()->GetId([param cStringUsingEncoding:NSUTF8StringEncoding]),
+                                              value.floatValue, width);
+    self.model->GetModel()->SaveParameters();
+}
+
 #pragma mark - On Update
-- (void)onUpdate {
+- (void)onUpdateWithParameterUpdate:(dispatch_block_t)block {
     NSTimeInterval deltaTime = LAppOpenGLManagerInstance.deltaTime;
     /// 设置模型参数
     self.model->GetModel()->LoadParameters();
-    
+    if (block) {
+        block();
+    }
     self.model->GetModel()->SaveParameters();
     
     /// 更新并绘制
