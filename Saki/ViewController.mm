@@ -19,10 +19,10 @@
 #import "LAppBundle.h"
 #import "LAppOpenGLManager.h"
 @interface ViewController () <ARSessionDelegate>
-@property (weak, nonatomic) IBOutlet UISlider *headYawSlider;
-@property (weak, nonatomic) IBOutlet UISlider *headPitchSlider;
-@property (weak, nonatomic) IBOutlet UISlider *headRollSlider;
-@property (weak, nonatomic) IBOutlet UISlider *mouthSlider;
+@property (weak, nonatomic) IBOutlet UISlider *ASlider;
+@property (weak, nonatomic) IBOutlet UISlider *BSlider;
+@property (weak, nonatomic) IBOutlet UISlider *CSlider;
+@property (weak, nonatomic) IBOutlet UISlider *DSlider;
 
 @property (nonatomic, assign) CGFloat headYaw;
 @property (nonatomic, assign) CGFloat headPitch;
@@ -34,6 +34,9 @@
 @property (nonatomic, assign) CGFloat eyeY;
 @property (nonatomic, assign) CGFloat bodyX;
 @property (nonatomic, assign) CGFloat bodyY;
+@property (nonatomic, assign) CGFloat bodyAngleX;
+@property (nonatomic, assign) CGFloat bodyAngleY;
+@property (nonatomic, assign) CGFloat bodyAngleZ;
 
 @property (nonatomic) GLKView *glView;
 @property (nonatomic, strong) LAppModel *haru;
@@ -83,7 +86,7 @@
     
     [self.glView setContext:LAppGLContext];
     LAppGLContextAction(^{
-        self.haru = [[LAppModel alloc] initWithName:@"Hiyori"];
+        self.haru = [[LAppModel alloc] initWithName:@"Haru"];
         [self.haru loadAsset];
         self.expressionCount = self.haru.expressionName.count;
         self.eyeLinearX = [[MPControlValueLinear alloc] initWithOutputMax:[self.haru paramMaxValue:LAppParamEyeBallX].doubleValue
@@ -122,6 +125,9 @@
         [self.haru setParam:LAppParamEyeROpen forValue:@(self.eyeROpen)];
         [self.haru setParam:LAppParamEyeBallX forValue:@(self.eyeX)];
         [self.haru setParam:LAppParamEyeBallY forValue:@(self.eyeY)];
+        [self.haru setParam:LAppParamBodyAngleX forValue:@(self.bodyAngleX)];
+        [self.haru setParam:LAppParamBodyAngleY forValue:@(self.bodyAngleY)];
+        [self.haru setParam:LAppParamBodyAngleZ forValue:@(self.bodyAngleZ)];
     }];
     glClearColor(0, 1, 0, 1);
 }
@@ -138,17 +144,17 @@
 
 #pragma mark - Action
 
-- (IBAction)handleHeadYawSlideChange:(id)sender {
-    self.headYaw = self.headYawSlider.value;
+- (IBAction)handleASlideChange:(id)sender {
+    self.bodyAngleX = self.ASlider.value;
 }
-- (IBAction)handleHeadPitchSlideChange:(id)sender {
-    self.headPitch = self.headPitchSlider.value;
+- (IBAction)handleBSlideChange:(id)sender {
+    self.bodyAngleY = self.BSlider.value;
 }
-- (IBAction)handleHeadRollSlideChange:(id)sender {
-    self.headRoll = self.headRollSlider.value;
+- (IBAction)handleCSlideChange:(id)sender {
+    self.bodyAngleZ = self.CSlider.value;
 }
-- (IBAction)handleMouthSlideChange:(id)sender {
-    self.mouthOpenY = self.mouthSlider.value;
+- (IBAction)handleDSlideChange:(id)sender {
+    self.mouthOpenY = self.DSlider.value;
 }
 
 
@@ -165,12 +171,16 @@
         self.headPitch = -(180 / M_PI) * self.faceNode.eulerAngles.x;
         self.headYaw = (180 / M_PI) * self.faceNode.eulerAngles.y;
         self.headRoll = -(180 / M_PI) * self.faceNode.eulerAngles.z + 90.0;
+        self.bodyAngleX = self.headYaw / 4;
+        self.bodyAngleY = self.headPitch / 2;
+        self.bodyAngleZ = self.headRoll / 2;
         
         self.eyeLOpen = 1 - faceAnchor.blendShapes[ARBlendShapeLocationEyeBlinkLeft].floatValue;
         self.eyeROpen = 1 - faceAnchor.blendShapes[ARBlendShapeLocationEyeBlinkRight].floatValue;
         self.eyeX = [self.eyeLinearX calc:(180 / M_PI) * self.leftEyeNode.eulerAngles.y];
         self.eyeY = - [self.eyeLinearY calc:(180 / M_PI) * self.leftEyeNode.eulerAngles.x];
         self.mouthOpenY = faceAnchor.blendShapes[ARBlendShapeLocationJawOpen].floatValue;
+        
     }
 }
 

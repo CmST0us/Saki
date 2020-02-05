@@ -35,6 +35,10 @@ LAppParam const LAppParamEyeBallX = LAppParamMake(ParamEyeBallX);
 LAppParam const LAppParamEyeBallY = LAppParamMake(ParamEyeBallY);
 LAppParam const LAppParamBaseX = LAppParamMake(ParamBaseX);
 LAppParam const LAppParamBaseY = LAppParamMake(ParamBaseY);
+LAppParam const LAppParamBodyAngleX = LAppParamMake(ParamBodyAngleX);
+LAppParam const LAppParamBodyAngleY = LAppParamMake(ParamBodyAngleY);
+LAppParam const LAppParamBodyAngleZ = LAppParamMake(ParamBodyAngleZ);
+
 
 namespace app {
 class Model : public Csm::CubismUserModel {
@@ -180,7 +184,9 @@ public:
     NSString *fileName = [NSString stringWithCString:self.modelSetting->GetPhysicsFileName() encoding:NSUTF8StringEncoding];
     NSString *filePath = [[[NSBundle modelResourceBundleWithName:self.assetName] bundlePath] stringByAppendingPathComponent:fileName];
     NSData *fileData = [[NSData alloc] initWithContentsOfFile:filePath];
-    self.model->LoadPhysics((const Csm::csmByte *)fileData.bytes, (Csm::csmSizeInt)fileData.length);
+    if (fileData) {
+        self.model->LoadPhysics((const Csm::csmByte *)fileData.bytes, (Csm::csmSizeInt)fileData.length);
+    }
 }
 
 - (void)loadMotion {

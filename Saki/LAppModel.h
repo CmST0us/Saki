@@ -24,6 +24,9 @@ extern LAppParam const LAppParamEyeBallX;
 extern LAppParam const LAppParamEyeBallY;
 extern LAppParam const LAppParamBaseX;
 extern LAppParam const LAppParamBaseY;
+extern LAppParam const LAppParamBodyAngleX;
+extern LAppParam const LAppParamBodyAngleY;
+extern LAppParam const LAppParamBodyAngleZ;
 
 @interface LAppModel : NSObject
 @property (nonatomic, readonly) CGFloat canvasWidth;
